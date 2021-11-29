@@ -1,4 +1,4 @@
-#Download sample app code
+#**Download sample app code**
 >1.Run the following command in Azure Cloud Shell from the portal to clone the app from GitHub.
 
 `git clone https://github.com/MicrosoftDocs/mslearn-advocates.azure-functions-and-signalr.git serverless-demo`
