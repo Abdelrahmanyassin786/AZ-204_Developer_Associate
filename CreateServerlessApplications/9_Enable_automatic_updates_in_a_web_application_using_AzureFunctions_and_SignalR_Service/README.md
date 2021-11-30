@@ -1,4 +1,6 @@
-#**Download sample app code**
+# **Analyze the limitations of a polling-based web app**
+
+# Download sample app code
 >1.Run the following command in Azure Cloud Shell from the portal to clone the app from GitHub.
 
 `git clone https://github.com/MicrosoftDocs/mslearn-advocates.azure-functions-and-signalr.git serverless-demo`
@@ -11,7 +13,7 @@
 
 `code start`
 
-#Create a Storage account
+# Create a Storage account
 
 >1.Run the following command in Cloud Shell to define a name for your Azure Storage account.
 
@@ -26,7 +28,7 @@
 `--kind StorageV2 \`    
 `--sku Standard_LRS`
   
-#Create an Azure Cosmos DB account
+# Create an Azure Cosmos DB account
 
 >1.Run the following `az cosmosdb create` command in Cloud Shell to create a new Azure Cosmos DB account in your sandbox resource group.
 
@@ -34,7 +36,7 @@
 `--name msl-sigr-cosmos-$(openssl rand -hex 5) \`    
 `--resource-group learn-b61d7cad-6e55-4a9b-8b5d-e6a0a48dee88`
 
-#Update local settings
+# Update local settings
 
 >1.Run the following commands in Cloud Shell to get the connection strings for the resources we created in this exercise.
 
@@ -79,5 +81,47 @@
 `npm start`
 
  
+<hr>
+<hr>
+
+
+# **Enable Automatic Updates in a web application using SignalR Service**
  
- 
+# Create a SignalR account
+
+>1.The first step is to run the following command in the Cloud Shell to create a new SignalR account in the sandbox resource group. This command can take a couple of minutes to complete, so please wait for it to finish before proceeding to the next step.
+
+`SIGNALR_SERVICE_NAME=msl-sigr-signalr$(openssl rand -hex 5) az signalr create \`      
+`--name $SIGNALR_SERVICE_NAME \`      
+`--resource-group learn-06362b92-41a9-4f72-a1d6-f84c56e45fba \`     
+`--sku Free_DS2 \`      
+`--unit-count 1`       
+
+>2.For SignalR Service to work properly with Azure Functions, you need to set its service mode to Serverless. Configure the service mode using the following command.
+
+`az resource update \`      
+`--resource-type Microsoft.SignalRService/SignalR \`     
+`--name $SIGNALR_SERVICE_NAME \`      
+`--resource-group learn-06362b92-41a9-4f72-a1d6-f84c56e45fba \`      
+`--set properties.features[flag=ServiceMode].value=Serverless`      
+
+# Update local settings
+
+>1.Run the following commands in the Cloud Shell to get the connection strings for the resources we created in this exercise.
+
+`SIGNALR_CONNECTION_STRING=$(az signalr key list \`       
+`--name $(az signalr list \`       
+`--resource-group learn-06362b92-41a9-4f72-a1d6-f84c56e45fba \`     
+`--query [0].name -o tsv) \`     
+`--resource-group learn-06362b92-41a9-4f72-a1d6-f84c56e45fba \`     
+`--query primaryConnectionString -o tsv)`     
+
+`printf "\n\nReplace <SIGNALR_CONNECTION_STRING> with:\n$SIGNALR_CONNECTION_STRING\n\n"`     
+
+
+>2.Navigate to where you cloned the application and open the **start** folder in Visual Studio Code. Open **local.settings.json** in the editor so you can update the file.
+
+>3.In **local.settings.json**, update the variable `AzureSignalRConnectionString` with the value listed in the Cloud Shell and save the file.
+
+
+
